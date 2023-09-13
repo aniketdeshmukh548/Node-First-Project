@@ -1,5 +1,5 @@
 const http= require('http');
-const { text } = require('stream/consumers');
+const fs=require('fs')
 
 //Can create in this way or below is anonymous arrow function
 // function rqListner(req,res){
@@ -9,6 +9,7 @@ const server=http.createServer((req,res)=>{
     //console.log(req.url,req.method,req.headers)
    // process.exit()
    const url=req.url;
+   const method=req.method;
    if(url==='/'){
     res.write('<html>');
    res.write('<head><title>Submit Form</title></head>')
@@ -16,6 +17,36 @@ const server=http.createServer((req,res)=>{
    res.write('<body><form action="/home" method="POST"><input type="text" placeholder="HOME PAGE REDIRECT" name="data"><button type="submit">SEND</button></form></body>')
    res.write('</html>')
    return res.end()
+   }
+   if(url==='/message' && method=='POST'){
+    const body=[];
+    req.on('data',(chunk)=>{
+        console.log(chunk)
+        body.push(chunk)
+    })
+    return req.on('end',()=>{
+        const parsedBody=Buffer.concat(body).toString();
+        const message=parsedBody.split('=')[1];
+        fs.writeFileSync('msg.txt',message);
+        res.statusCode=302;
+    res.setHeader=('Location','/');
+    return res.end()
+    })
+   }
+   if(url==='/' && method=='POST'){
+    const body1=[];
+    req.on('data',(chunk)=>{
+        console.log(chunk)
+        body1.push(chunk)
+    })
+    return req.on('end',()=>{
+        const parsedBody1=Buffer.concat(body1).toString();
+        const message1=parsedBody1.split('=')[1];
+        fs.writeFileSync('msg.txt',message1);
+        res.statusCode=302;
+    res.setHeader=('Location','/');
+    return res.end()
+    })
    }
    if(url==='/home'){
     res.write('<html>');
