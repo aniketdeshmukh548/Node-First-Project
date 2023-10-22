@@ -3,6 +3,7 @@ const path=require('path')
 const express=require('express');
 const bodyParser=require('body-parser')
 const app=express()
+const errorContoller=require('./controllers/error')
 
 const adminRoutes=require('./routes/admin')
 const shopRoutes=require('./routes/shop')
@@ -16,9 +17,7 @@ app.use(shopRoutes)
 app.use(successRoutes)
 app.use(sucmsgRoutes)
 app.use(express.static(path.join(__dirname,'public')))
-app.use('/',(req,res,next)=>{
-    res.status(404).sendFile(path.join(__dirname,'Views','404.html'))
-})
+app.use(errorContoller.errorContoller)
 // const server=http.createServer(app)
 // server.listen(3000)
 
